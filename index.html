@@ -81,9 +81,15 @@ CONTAINER PRINCIPAL
         CAPTURA DE LEAD
         ========================== -->
         <br>
-        <a href="javascript:void(0)" onclick="enviarWhatsApp()" class="btn-whatsapp">
-            <img src="img/whatsapp-icon.png" style="height:20px; margin-right:5px;"> Enviar WhatsApp
-        </a>
+        <div class="envio-whatsapp-usuario">
+    <label for="whatsappUsuario" style="display:block; margin-bottom:5px;">
+        Digite o número com DDI:
+    </label>
+    <input type="text" id="whatsappUsuario" placeholder="Ex: 5511999998888" style="margin-bottom:10px; padding:5px;">
+    <a href="javascript:void(0)" onclick="enviarWhatsAppUsuario()" class="btn-whatsapp">
+        <img src="img/whatsapp-icon.png" style="height:20px; margin-right:5px;"> Enviar relatório - WhatsApp
+    </a>
+</div>
 
         <p style="font-size:13px; margin-top:10px; opacity:0.8;">
             Receba gratuitamente sua simulação detalhada por WhatsApp.
@@ -117,7 +123,6 @@ CONTAINER PRINCIPAL
         <!-- ==========================
         GRÁFICO
         ========================== -->
-        <!--<canvas id="grafico"></canvas>-->
 
         <div class="grafico-container">
             <canvas id="grafico"></canvas>
@@ -162,9 +167,9 @@ CONTAINER PRINCIPAL
 
     </div>
 
-    <!-- ==========================
-    FOOTER
-    ========================== -->
+    
+<!--==========================
+FOOTER ========================== -->
     <footer>
         <p>
             Simulação realizada por<br>

@@ -359,11 +359,12 @@ function exportarExcel() {
 // ===============
 // EXPORTAR WHATSAPP
 // ===============
-function enviarWhatsApp() {
+
+function enviarWhatsAppUsuario() {
     // 1️⃣ Calcula normalmente
     calcular();
 
-    // 2️⃣ Pega resultado limpo
+    // 2️⃣ Pega o resultado limpo
     let resultado = document.getElementById("resultado").textContent || "";
     resultado = resultado.replace(/[\uFEFF\uFFFD\u200B]/g, '').trim();
 
@@ -390,10 +391,15 @@ function enviarWhatsApp() {
     // 5️⃣ Substitui quebras de linha por %0A (garante quebras no WhatsApp)
     let mensagem = mensagemFormatada.split("\n").join("%0A");
 
-    // 6️⃣ Número do WhatsApp
-    let numero = "5511958930291";
+    // 6️⃣ Pega o número de WhatsApp do usuário
+    let numero = document.getElementById("whatsappUsuario").value.trim();
+    if (!numero) {
+        alert("Por favor, digite um número válido com DDI!");
+        return;
+    }
 
-    // 7️⃣ Abre WhatsApp
+    // 7️⃣ Monta a URL do WhatsApp e abre
     let url = `https://wa.me/${numero}?text=${mensagem}`;
     window.open(url, "_blank");
+
 }
