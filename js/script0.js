@@ -103,9 +103,9 @@ function calcular() {
 
     let inss = calcularINSS(salario);
 
-    // ==========================
+    // =====================
     // REGIME COMPLETO
-    // ==========================
+    // =====================
     let dedDependentes = dep * CONFIG.VALOR_DEPENDENTE;
 
     let baseCompleta = Math.max(
@@ -121,9 +121,9 @@ function calcular() {
         0
     );
 
-    // ==========================
+    // =====================
     // REGIME SIMPLIFICADO
-    // ==========================
+    // =====================
     let baseSimplificado = Math.max(
         salario - inss - CONFIG.DESCONTO_SIMPLIFICADO,
         0
@@ -137,17 +137,17 @@ function calcular() {
         0
     );
 
-    // ==========================
+    // ===========≈=========≈
     // MELHOR REGIME
-    // ==========================
+    // =====================
     let melhorIR = Math.min(irCompleto, irSimplificado);
     let regime = melhorIR === irCompleto ?
         "Completo" :
         "Simplificado";
 
-    // ==========================
+    // =====================
     // EXIBIR RESULTADO
-    // ==========================
+    // =================≈===
     document.getElementById("resultado").innerHTML = `
         <h3>Melhor Regime: ${regime}</h3>
 
@@ -173,9 +173,9 @@ function calcular() {
     gerarGrafico(irCompleto, irSimplificado);
 }
 
-// ==========================
+// ===============
 // GRÁFICO
-// ==========================
+// ===============
 let grafico;
 
 function gerarGrafico(irCompleto, irSimplificado) {
@@ -194,8 +194,8 @@ function gerarGrafico(irCompleto, irSimplificado) {
                 label: "IR Devido (R$)",
                 data: [irCompleto, irSimplificado],
                 backgroundColor: [
-                    "#3b82f6",  // Azul profissional
-                    "#10b981"   // Verde premium
+                    "#3b82f6",  
+                    "#10b981"   
                 ],
                 borderRadius: 8,
                 borderSkipped: false
@@ -218,7 +218,7 @@ function gerarGrafico(irCompleto, irSimplificado) {
                     display: true,
                     position: 'bottom',
                     labels: {
-                        color: "rgba(255,255,255,0.75)", // branco fosco
+                        color: "rgba(255,255,255,0.75)", 
                         padding: 20,
                         boxWidth: 20,
                         font: {
@@ -232,11 +232,11 @@ function gerarGrafico(irCompleto, irSimplificado) {
                 y: {
                     beginAtZero: true,
                     ticks: {
-                        color: "rgba(255,255,255,0.75)", // branco fosco
+                        color: "rgba(255,255,255,0.75)", 
                         padding: 10
                     },
                     grid: {
-                        color: "rgba(255,255,255,0.08)" // grade bem suave
+                        color: "rgba(255,255,255,0.08)" 
                     }
                 },
                 x: {
@@ -249,14 +249,14 @@ function gerarGrafico(irCompleto, irSimplificado) {
                     }
                 }
             }
-        }  //===== daqui para cima
+        }  
 
     });
 }
 
-// ==========================
+// ===============
 // PAINEL ADMIN
-// ==========================
+// ===============
 function toggleAdmin() {
     let p = document.getElementById("adminPanel");
     p.style.display =
@@ -279,9 +279,9 @@ function salvarConfig() {
     alert("Configurações atualizadas!");
 }
 
-// ==========================
+// ===============
 // GERAR PDF
-// ==========================
+// ===============
 async function gerarPDF() {
 
     const { jsPDF } = window.jspdf;
@@ -312,9 +312,9 @@ async function gerarPDF() {
     doc.save("Simulacao_IRPF_RCONT_2026.pdf");
 }
 
-// ==========================
+// ===============
 // EXPORTAR EXCEL
-// ==========================
+// ===============
 function exportarExcel() {
 
     let resultado = document.getElementById("resultado").innerText;
@@ -356,9 +356,9 @@ function exportarExcel() {
     link.click();
 }
 
-// ==========================
-// EXPORTAR EXCEL
-// ==========================
+// ===============
+// EXPORTAR WHATSAPP
+// ===============
 function enviarWhatsApp() {
     // 1️⃣ Calcula normalmente
     calcular();
