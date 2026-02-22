@@ -36,9 +36,9 @@ function formatar(v) {
 }
 
 // ==========================
-// INSS PROGRESSIVO
+// INSS PROGRESSIVO OFICIAL 2026
 // ==========================
-/*function calcularINSS(salario) {
+function calcularINSS(salario) {
 
     const faixas = [
         { limite: 1412.00, aliquota: 0.075 },
@@ -59,37 +59,6 @@ function formatar(v) {
     }
 
     return total;
-}*/
-
-// ==========================
-// INSS PROGRESSIVO OFICIAL 2026
-// ==========================
-function calcularINSS(salario) {
-
-    const faixas = [
-        { limite: 1412.00, aliquota: 0.075 },
-        { limite: 2666.68, aliquota: 0.09 },
-        { limite: 4000.00, aliquota: 0.12 },
-        { limite: 7786.02, aliquota: 0.14 }
-    ];
-
-    let total = 0;
-    let anterior = 0;
-
-    for (let f of faixas) {
-        if (salario > anterior) {
-            // Base da faixa: mínimo entre salário e limite da faixa
-            let base = Math.min(salario, f.limite) - anterior;
-            // Arredonda a contribuição da faixa para 2 casas decimais
-            let contribuicao = Math.round(base * f.aliquota * 100) / 100;
-            total += contribuicao;
-            anterior = f.limite;
-        }
-    }
-
-    // Limita ao teto do INSS
-    const teto = 7786.02 * 0.14 + 4000.00 * 0.12 + (2666.68 - 1412.00) * 0.09 + 1412.00 * 0.075;
-    return Math.min(total, teto);
 }
 
 // ==========================
