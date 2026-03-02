@@ -41,10 +41,10 @@ function formatar(v) {
 function calcularINSS(salario) {
 
     const faixas = [
-        { limite: 1412.00, aliquota: 0.075 },
-        { limite: 2666.68, aliquota: 0.09 },
-        { limite: 4000.03, aliquota: 0.12 },
-        { limite: 7786.02, aliquota: 0.14 }
+        { limite: 1621.00, aliquota: 0.075 },
+        { limite: 2902.84, aliquota: 0.09 },
+        { limite: 4354.27, aliquota: 0.12 },
+        { limite: 8475.55, aliquota: 0.14 }
     ];
 
     let total = 0;
