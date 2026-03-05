@@ -3,7 +3,7 @@
 // ==========================
 const CONFIG = {
     VALOR_DEPENDENTE: 189.59,
-    DESCONTO_SIMPLIFICADO: 607.00,
+    DESCONTO_SIMPLIFICADO: 607.20,
     REDUTOR_BASE: 978.62,
     REDUTOR_FATOR: 0.133145
 };
@@ -36,7 +36,7 @@ function formatar(v) {
 }
 
 // ==========================
-// INSS PROGRESSIVO OFICIAL 2026
+// INSS PROGRESSIVO
 // ==========================
 function calcularINSS(salario) {
 
@@ -77,105 +77,145 @@ function calcularIR(base) {
 // ==========================
 // REDUTOR 2026
 // Fórmula:
-// 978.62 - (0.133145 × base)
+// 978.62 - (0.133145 × bruto)
 // ==========================
-function calcularRedutor(base) {
-    let valor = CONFIG.REDUTOR_BASE -
-        (CONFIG.REDUTOR_FATOR * base);
-
-    return Math.max(valor, 0);
+function calcularRedutor(salarioBruto) {
+    
+    if (!salarioBruto || salarioBruto <= 5000) return 0;
+    if (salarioBruto > 7350) return 0;
+    
+    let redutor =
+        CONFIG.REDUTOR_BASE -
+        (CONFIG.REDUTOR_FATOR * salarioBruto);
+    
+    return Math.max(0, redutor);
 }
 
 // ==========================
 // CÁLCULO PRINCIPAL
 // ==========================
 function calcular() {
+    
+    try {
+        
+        if (document.getElementById("emailLead")) {
+            let email = document.getElementById("emailLead").value;
+            localStorage.setItem("leadEmail", email);
+        }
+        
+        // ==========================
+        // ENTRADAS
+        // ==========================
+        let salario = parseMoeda(document.getElementById("salario").value);
+        let dep = parseInt(document.getElementById("dependentes").value) || 0;
+        let pensao = parseMoeda(document.getElementById("pensao").value);
+        let prev = parseMoeda(document.getElementById("previdencia").value);
+        
+        salario = Math.max(0, salario);
+        
+        // ==========================
+        // INSS
+        // ==========================
+        let inss = calcularINSS(salario);
+        
+        // ==========================
+        // REGIME COMPLETO
+        // ==========================
+        let dedDependentes = dep * CONFIG.VALOR_DEPENDENTE;
+        
+        let baseCompleta = salario -
+            inss -
+            dedDependentes -
+            pensao -
+            prev;
+        
+        baseCompleta = Math.max(0, baseCompleta);
+        
+        let irProgCompleto = calcularIR(baseCompleta);
+        let impostoCompleto = Math.max(0, irProgCompleto.ir);
+        
+        let redutorRealCompleto = calcularRedutor(salario);
 
-    if (document.getElementById("emailLead")) {
-    let email = document.getElementById("emailLead").value;
-    localStorage.setItem("leadEmail", email);
+        let redutorAplicadoCompleto = Math.min(
+      redutorRealCompleto,
+       impostoCompleto
+         );
+        
+        let irCompleto = Math.max(
+        impostoCompleto - redutorAplicadoCompleto,
+         0
+         );
+        
+        // ==========================
+        // REGIME SIMPLIFICADO
+        // ==========================
+        let baseSimplificado = salario -
+            inss -
+            CONFIG.DESCONTO_SIMPLIFICADO;
+        
+        baseSimplificado = Math.max(0, baseSimplificado);
+        
+        let irProgSimplificado = calcularIR(baseSimplificado);
+        let impostoSimplificado = Math.max(0, irProgSimplificado.ir);
+        
+        let redutorRealSimplificado = calcularRedutor(salario);
+
+        let redutorAplicadoSimplificado = Math.min(
+        redutorRealSimplificado,
+       impostoSimplificado
+        );
+        
+        let irSimplificado = Math.max(
+        impostoSimplificado - redutorAplicadoSimplificado,
+         0
+         );
+        
+        // ==========================
+        // MELHOR REGIME
+        // ==========================
+        let melhorIR = Math.min(irCompleto, irSimplificado);
+        let regime = melhorIR === irCompleto ?
+            "Completo" :
+            "Simplificado";
+        
+        // ==========================
+        // EXIBIR RESULTADO
+        // ==========================
+        document.getElementById("resultado").innerHTML = `
+            <h3>Melhor Regime: ${regime}</h3>
+
+            <strong>INSS:</strong> ${formatar(inss)}<br><br>
+
+            <strong>REGIME COMPLETO</strong><br>
+            Base: ${formatar(baseCompleta)}<br>
+            Faixa: ${irProgCompleto.faixa}<br>
+            IR Progressivo: ${formatar(impostoCompleto)}<br>
+            Redutor: ${formatar(redutorRealCompleto)}<br>
+            IR Final: ${formatar(irCompleto)}<br><br>
+
+            <strong>REGIME SIMPLIFICADO</strong><br>
+            Base: ${formatar(baseSimplificado)}<br>
+            Faixa: ${irProgSimplificado.faixa}<br>
+            IR Progressivo: ${formatar(impostoSimplificado)}<br>
+            Redutor: ${formatar(redutorRealSimplificado)}<br>
+            IR Final: ${formatar(irSimplificado)}<br><br>
+
+            <strong>IR DEVIDO: ${formatar(melhorIR)}</strong>
+        `;
+        
+        gerarGrafico(irCompleto, irSimplificado);
+        
+    } catch (erro) {
+        
+        console.error("Erro no cálculo:", erro);
+        alert("Ocorreu um erro no cálculo. Verifique os valores informados.");
+        
     }
-
-    let salario = parseMoeda(document.getElementById("salario").value);
-    let dep = parseInt(document.getElementById("dependentes").value) || 0;
-    let pensao = parseMoeda(document.getElementById("pensao").value);
-    let prev = parseMoeda(document.getElementById("previdencia").value);
-
-    let inss = calcularINSS(salario);
-
-    // =====================
-    // REGIME COMPLETO
-    // =====================
-    let dedDependentes = dep * CONFIG.VALOR_DEPENDENTE;
-
-    let baseCompleta = Math.max(
-        salario - inss - dedDependentes - pensao - prev,
-        0
-    );
-
-    let irProgCompleto = calcularIR(baseCompleta);
-    let redutorCompleto = calcularRedutor(baseCompleta);
-
-    let irCompleto = Math.max(
-        irProgCompleto.ir - redutorCompleto,
-        0
-    );
-
-    // =====================
-    // REGIME SIMPLIFICADO
-    // =====================
-    let baseSimplificado = Math.max(
-        salario - inss - CONFIG.DESCONTO_SIMPLIFICADO,
-        0
-    );
-
-    let irProgSimplificado = calcularIR(baseSimplificado);
-    let redutorSimplificado = calcularRedutor(baseSimplificado);
-
-    let irSimplificado = Math.max(
-        irProgSimplificado.ir - redutorSimplificado,
-        0
-    );
-
-    // ===========≈=========≈
-    // MELHOR REGIME
-    // =====================
-    let melhorIR = Math.min(irCompleto, irSimplificado);
-    let regime = melhorIR === irCompleto ?
-        "Completo" :
-        "Simplificado";
-
-    // =====================
-    // EXIBIR RESULTADO
-    // =================≈===
-    document.getElementById("resultado").innerHTML = `
-        <h3>Melhor Regime: ${regime}</h3>
-
-        <strong>INSS:</strong> ${formatar(inss)}<br><br>
-
-        <strong>REGIME COMPLETO</strong><br>
-        Base: ${formatar(baseCompleta)}<br>
-        Faixa: ${irProgCompleto.faixa}<br>
-        IR Progressivo: ${formatar(irProgCompleto.ir)}<br>
-        Redutor: ${formatar(redutorCompleto)}<br>
-        IR Final: ${formatar(irCompleto)}<br><br>
-
-        <strong>REGIME SIMPLIFICADO</strong><br>
-        Base: ${formatar(baseSimplificado)}<br>
-        Faixa: ${irProgSimplificado.faixa}<br>
-        IR Progressivo: ${formatar(irProgSimplificado.ir)}<br>
-        Redutor: ${formatar(redutorSimplificado)}<br>
-        IR Final: ${formatar(irSimplificado)}<br><br>
-
-        <strong>IR DEVIDO: ${formatar(melhorIR)}</strong>
-    `;
-
-    gerarGrafico(irCompleto, irSimplificado);
 }
 
-// ===============
+// ==========================
 // GRÁFICO
-// ===============
+// ==========================
 let grafico;
 
 function gerarGrafico(irCompleto, irSimplificado) {
@@ -185,7 +225,7 @@ function gerarGrafico(irCompleto, irSimplificado) {
     if (grafico) {
         grafico.destroy();
     }
-
+    
     grafico = new Chart(ctx, {
         type: "bar",
         data: {
@@ -193,70 +233,31 @@ function gerarGrafico(irCompleto, irSimplificado) {
             datasets: [{
                 label: "IR Devido (R$)",
                 data: [irCompleto, irSimplificado],
-                backgroundColor: [
-                    "#3b82f6",  
-                    "#10b981"   
-                ],
-                borderRadius: 8,
-                borderSkipped: false
+         backgroundColor: [
+        "#3498db",
+        "#2ecc71"]       
             }]
         },
-         
         options: {
             responsive: true,
-            maintainAspectRatio: false,
-
-            layout: {
-                padding: {
-                    top: 30,
-                    bottom: 30
-                }
-            },
-
+            maintainAspectRatio: false, // ESSENCIAL
             plugins: {
                 legend: {
-                    display: true,
-                    position: 'bottom',
-                    labels: {
-                        color: "rgba(255,255,255,0.75)", 
-                        padding: 20,
-                        boxWidth: 20,
-                        font: {
-                            size: 13
-                        }
-                    }
+                    display: true
                 }
             },
-
             scales: {
                 y: {
-                    beginAtZero: true,
-                    ticks: {
-                        color: "rgba(255,255,255,0.75)", 
-                        padding: 10
-                    },
-                    grid: {
-                        color: "rgba(255,255,255,0.08)" 
-                    }
-                },
-                x: {
-                    ticks: {
-                        color: "rgba(255,255,255,0.75)", // branco fosco
-                        padding: 10
-                    },
-                    grid: {
-                        color: "rgba(255,255,255,0.05)"
-                    }
+                    beginAtZero: true
                 }
             }
-        }  
-
+        }
     });
 }
 
-// ===============
+// ==========================
 // PAINEL ADMIN
-// ===============
+// ==========================
 function toggleAdmin() {
     let p = document.getElementById("adminPanel");
     p.style.display =
@@ -279,127 +280,190 @@ function salvarConfig() {
     alert("Configurações atualizadas!");
 }
 
-// ===============
+// ==========================
 // GERAR PDF
-// ===============
+// ==========================
 async function gerarPDF() {
 
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF();
 
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(16);
-    doc.text("RCONT-SCT | Soluções Contábeis e Tributárias", 20, 20);
-
-    doc.setFontSize(14);
-    doc.text("Simulação IRPF 2026", 20, 30);
-
-    doc.setFont("helvetica", "normal");
-    doc.setFontSize(11);
-
-    let linhas = document
-        .getElementById("resultado")
-        .innerText
-        .split("\n");
-
-    let y = 45;
-
-    linhas.forEach(linha => {
-        doc.text(linha, 20, y);
-        y += 7;
-    });
-
-    doc.save("Simulacao_IRPF_RCONT_2026.pdf");
-}
-
-// ===============
-// EXPORTAR EXCEL
-// ===============
-function exportarExcel() {
+    let salario = document.getElementById("salario").value;
+    let dependentes = document.getElementById("dependentes").value;
+    let pensao = document.getElementById("pensao").value;
+    let previdencia = document.getElementById("previdencia").value;
 
     let resultado = document.getElementById("resultado").innerText;
 
-    let linhas = resultado.split("\n");
+    let y = 20;
 
-    let tabela = `
-        <table border="1">
-            <tr>
-                <th>Descrição</th>
-                <th>Valor</th>
-            </tr>
-    `;
+    // TÍTULO
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(16);
+    doc.text("RCONT-SCT | Soluções Contábeis e Tributárias", 20, y);
+
+    y += 10;
+
+    doc.setFontSize(12);
+    doc.text("Relatório de Simulação IRPF 2026", 20, y);
+
+    y += 8;
+
+    doc.setDrawColor(150);
+    doc.line(20, y, 190, y);
+
+    y += 10;
+
+    // DADOS INFORMADOS
+    doc.setFontSize(11);
+    doc.setFont("helvetica", "bold");
+    doc.text("DADOS INFORMADOS", 20, y);
+
+    y += 8;
+
+    doc.setFont("helvetica", "normal");
+
+    doc.text(`Salário bruto: ${salario}`, 20, y); y += 6;
+    doc.text(`Dependentes: ${dependentes}`, 20, y); y += 6;
+    doc.text(`Pensão alimentícia: ${pensao}`, 20, y); y += 6;
+    doc.text(`Previdência privada: ${previdencia}`, 20, y); y += 10;
+
+    doc.line(20, y, 190, y);
+    y += 10;
+
+    // RESULTADO
+    doc.setFont("helvetica", "bold");
+    doc.text("RESULTADO DA SIMULAÇÃO", 20, y);
+
+    y += 8;
+
+    doc.setFont("helvetica", "normal");
+
+    let linhas = resultado.split("\n");
 
     linhas.forEach(linha => {
 
-        if (linha.includes(":")) {
-            let partes = linha.split(":");
+        if (linha.trim() !== "") {
 
-            tabela += `
-                <tr>
-                    <td>${partes[0]}</td>
-                    <td>${partes[1]}</td>
-                </tr>
-            `;
+            if (y > 270) {
+                doc.addPage();
+                y = 20;
+            }
+
+            doc.text(linha, 20, y);
+            y += 6;
         }
+
     });
 
-    tabela += "</table>";
+    y += 10;
+
+    doc.line(20, y, 190, y);
+
+    y += 8;
+
+    doc.setFontSize(9);
+    doc.text(
+        "Relatório gerado automaticamente | RCONT-SCT Consultoria Tributária - Fone: (11) 95893-0291",
+        20,
+        y
+    );
+
+    doc.save("Relatorio_Simulacao_IRPF_RCONT.pdf");
+}
+
+// ==========================
+// EXPORTAR EXCEL
+// ==========================
+function exportarExcel() {
+
+    let conteudo = document.getElementById("resultado").innerText;
 
     let blob = new Blob(
-        ["\ufeff", tabela],
+        [conteudo],
         { type: "application/vnd.ms-excel" }
     );
 
     let link = document.createElement("a");
+
     link.href = URL.createObjectURL(blob);
-    link.download = "Simulacao_IRPF_RCONT_2026.xls";
+    link.download = "Simulacao_IRPF_RCONT.xls";
     link.click();
 }
 
-// ===============
-// EXPORTAR WHATSAPP
-// ===============
-
+// ==========================
+// ENVIAR RESULTADO POR WHATSAPP
+// ==========================
 function enviarWhatsAppUsuario() {
-    // 1️⃣ Calcula normalmente
-    calcular();
-
-    // 2️⃣ Pega o resultado limpo
-    let resultado = document.getElementById("resultado").textContent || "";
-    resultado = resultado.replace(/[\uFEFF\uFFFD\u200B]/g, '').trim();
-
-    // 3️⃣ Quebra em linhas e remove vazias
-    let linhas = resultado.split("\n").map(l => l.trim()).filter(l => l !== "");
-
-    // 4️⃣ Monta mensagem segura para WhatsApp
-    let mensagemFormatada = "Simulação IRPF 2026 - RCONT-SCT\n\n";
-
-    linhas.forEach((linha) => {
-        mensagemFormatada += linha + "\n"; // cada linha + quebra
-        // adiciona linha extra entre blocos
-        if (
-            linha.startsWith("INSS") ||
-            linha.startsWith("IR Final") ||
-            linha.startsWith("IR DEVIDO")
-        ) {
-            mensagemFormatada += "\n";
+    try {
+        calcular();
+        
+        const inputNumero = document.getElementById("whatsappUsuario");
+        if (!inputNumero) {
+            alert("Campo de número não encontrado!");
+            return;
         }
-    });
-
-    mensagemFormatada += "Precisa de ajuda para declarar seu IR? Fale com a RCONT-SCT!";
-
-    // 5️⃣ Substitui quebras de linha por %0A (garante quebras no WhatsApp)
-    let mensagem = mensagemFormatada.split("\n").join("%0A");
-
-    // 6️⃣ Pega o número de WhatsApp do usuário
-    let numero = document.getElementById("whatsappUsuario").value.trim();
-    if (!numero) {
-        alert("Por favor, digite um número válido com DDI!");
-        return;
+        
+        let numero = inputNumero.value.trim().replace(/\D/g, "");
+        if (!numero) {
+            alert("Por favor, digite o número com DDI. Ex: 5511999998888");
+            inputNumero.focus();
+            return;
+        }
+        if (numero.length < 10 || numero.length > 13) {
+            alert("Número inválido! Use o formato com DDI. Ex: 5511999998888");
+            inputNumero.focus();
+            return;
+        }
+        
+        const resultadoElement = document.getElementById("resultado");
+        if (!resultadoElement) {
+            alert("Resultado não encontrado! Execute uma simulação primeiro.");
+            return;
+        }
+        
+        const resultadoHTML = resultadoElement.innerHTML || "";
+        
+        // ==========================
+        // CONVERTER HTML PARA TEXTO
+        // ==========================
+        let texto = resultadoHTML
+            .replace(/<br\s*\/?>/gi, "\n") // <br> vira quebra de linha
+            .replace(/<[^>]*>/g, "") // remove outras tags
+            .replace(/&nbsp;/g, " "); // decodifica &nbsp; para espaço
+        
+        // ==========================
+        // QUEBRAR EM LINHAS E LIMPAR ESPAÇOS
+        // ==========================
+        const linhas = texto
+            .split("\n")
+            .map(l => l.replace(/\s+/g, " ").trim())
+            .filter(l => l !== "");
+        
+        // ==========================
+        // MONTAR MENSAGEM
+        // ==========================
+        let mensagemFormatada = "*Simulação IRPF 2026 - RCONT-SCT*\n\n";
+        
+        linhas.forEach((linha) => {
+            mensagemFormatada += linha + "\n";
+            if (linha.startsWith("INSS") ||
+                linha.startsWith("IR Final") ||
+                linha.startsWith("IR DEVIDO")) {
+                mensagemFormatada += "\n";
+            }
+        });
+        
+        mensagemFormatada += "\n_Precisa de ajuda para declarar seu IR? Fale com a RCONT-SCT!_\n";
+        mensagemFormatada += "📞 (11) 95893-0291";
+        
+        const mensagem = encodeURIComponent(mensagemFormatada);
+        const url = `https://wa.me/${numero}?text=${mensagem}`;
+        window.open(url, "_blank");
+        
+    } catch (erro) {
+        console.error("Erro ao enviar WhatsApp:", erro);
+        alert("Ocorreu um erro ao enviar a mensagem. Tente novamente.");
     }
-
-    // 7️⃣ Monta a URL do WhatsApp e abre
-    let url = `https://wa.me/${numero}?text=${mensagem}`;
-    window.open(url, "_blank");
 
 }
