@@ -22,16 +22,16 @@ Ele compara automaticamente os regimes Completo (com deduções legais) e Simpli
 
 ✨ Funcionalidades
 
-· ✅ Cálculo automático do INSS – progressivo por faixas (2026)
-· ✅ Cálculo do IRPF – tabela progressiva com alíquotas de 7,5% a 27,5%
-· ✅ Redutor da lei – aplicado para salários entre R$ 5.000,00 e R$ 7.350,00
-· ✅ Comparação de regimes – Completo (dependentes, pensão, previdência) vs. Simplificado (desconto padrão)
-· ✅ Gráfico interativo – visualização em barras com Chart.js
-· ✅ Exportação para PDF – relatório profissional gerado com jsPDF
-· ✅ Exportação para Excel – arquivo .xls com os dados da simulação
-· ✅ Envio por WhatsApp – usuário informa o número e recebe o resumo formatado
-· ✅ Painel administrativo – ajuste de parâmetros (redutor, desconto simplificado) com persistência via localStorage
-· ✅ PWA – instalável como aplicativo, com suporte a offline
+- ✅ Cálculo automático do INSS – progressivo por faixas (2026)
+- ✅ Cálculo do IRPF – tabela progressiva com alíquotas de 7,5% a 27,5%
+- ✅ Redutor da lei – aplicado para salários entre R$ 5.000,00 e R$ 7.350,00
+- ✅ Comparação de regimes – Completo (dependentes, pensão, previdência) vs. Simplificado (desconto padrão)
+- ✅ Gráfico interativo – visualização em barras com Chart.js
+- ✅ Exportação para PDF – relatório profissional gerado com jsPDF
+- ✅ Exportação para Excel – arquivo .xls com os dados da simulação
+- ✅ Envio por WhatsApp – usuário informa o número e recebe o resumo formatado
+- ✅ Painel administrativo – ajuste de parâmetros (redutor, desconto simplificado) com persistência via localStorage
+- ✅ PWA – instalável como aplicativo, com suporte a offline
 
 ---
 
@@ -52,12 +52,12 @@ Ele compara automaticamente os regimes Completo (com deduções legais) e Simpli
 
 🛠️ Tecnologias Utilizadas
 
-· HTML5 + CSS3 – estrutura e estilização
-· JavaScript (ES6+) – lógica da aplicação
-· Chart.js – gráficos interativos
-· jsPDF – geração de PDF
-· LocalStorage – armazenamento das configurações administrativas
-· Service Worker – funcionamento offline (PWA)
+- HTML5 + CSS3 – estrutura e estilização
+- JavaScript (ES6+) – lógica da aplicação
+- Chart.js – gráficos interativos
+- jsPDF – geração de PDF
+- LocalStorage – armazenamento das configurações administrativas
+- Service Worker – funcionamento offline (PWA)
 
 ---
 
@@ -122,9 +122,9 @@ Este projeto é de uso interno e demonstração. Todos os direitos reservados à
 
 O simulador permite ajustar três parâmetros importantes para o cálculo de 2026:
 
-· Redutor Base – valor fixo da fórmula (padrão: 978.62)
-· Redutor Fator – multiplicador (padrão: 0.133145)
-· Desconto Simplificado – valor fixo do regime simplificado (padrão: 607.20)
+- Redutor Base – valor fixo da fórmula (padrão: 978.62)
+- Redutor Fator – multiplicador (padrão: 0.133145)
+- Desconto Simplificado – valor fixo do regime simplificado (padrão: 607.20)
 
 Para acessar, clique no botão "Painel Administrativo" no final da página. As alterações são salvas automaticamente no navegador (localStorage) e persistidas entre sessões.
 
