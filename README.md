@@ -63,14 +63,13 @@ Ele compara automaticamente os regimes Completo (com deduções legais) e Simpli
 
 ⚙️ Painel Administrativo
 
-O simulador permite ajustar três parâmetros fundamentais para o cálculo de 2026:
+O simulador permite ajustar três parâmetros importantes para o cálculo de 2026:
 
-Parâmetro Descrição Padrão
-Redutor Base Valor fixo da fórmula do redutor 978.62
-Redutor Fator Multiplicador da fórmula 0.133145
-Desconto Simplificado Valor fixo do regime simplificado 607.20
+- Redutor Base – valor fixo da fórmula (padrão: 978.62)
+- Redutor Fator – multiplicador (padrão: 0.133145)
+- Desconto Simplificado – valor fixo do regime simplificado (padrão: 607.20)
 
-Para acessar, clique no botão "Painel Administrativo" no final da página. As alterações são salvas automaticamente no navegador e mantidas entre sessões.
+Para acessar, clique no botão "Painel Administrativo" no final da página. As alterações são salvas automaticamente no navegador (localStorage) e persistidas entre sessões.
 
 ---
 
@@ -114,56 +113,4 @@ Rosemberg Oliveira – Contador
 
 Este projeto é de uso interno e demonstração. Todos os direitos reservados à RCONT-SCT.
 
----· Service Worker – para funcionamento offline (PWA)
-
 ---
-
-⚙️ Painel Administrativo
-
-O simulador permite ajustar três parâmetros importantes para o cálculo de 2026:
-
-- Redutor Base – valor fixo da fórmula (padrão: 978.62)
-- Redutor Fator – multiplicador (padrão: 0.133145)
-- Desconto Simplificado – valor fixo do regime simplificado (padrão: 607.20)
-
-Para acessar, clique no botão "Painel Administrativo" no final da página. As alterações são salvas automaticamente no navegador (localStorage) e persistidas entre sessões.
-
----
-
-📁 Estrutura de arquivos
-
-```
-/
-├── index.html              # Página principal
-├── manifest.json           # Configuração PWA
-├── service-worker.js       # Service Worker para offline
-├── css/
-│   └── style0.css          # Estilos personalizados
-├── js/
-│   └── script0.js          # Lógica completa da aplicação
-├── img/
-│   ├── logo.png            # Logotipo
-│   └── whatsapp-icon.png   # Ícone do WhatsApp
-└── README.md               # Este arquivo
-```
-
----
-
-📲 Instalação como aplicativo (PWA)
-
-No celular ou desktop, após abrir o simulador, utilize a opção "Adicionar à tela inicial" do navegador. O aplicativo funcionará mesmo sem internet.
-
----
-
-📞 Contato
-
-RCONT-SCT | Soluções Contábeis e Tributárias
-Rosemberg Oliveira – Contador
-📧 contato@rcont-sct.com.br
-📱 (11) 95893-0291
-
----
-
-📄 Licença
-
-Este projeto é de uso interno e demonstração. Todos os direitos reservados à RCONT-SCT.
