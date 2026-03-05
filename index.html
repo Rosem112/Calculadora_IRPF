@@ -86,10 +86,11 @@ CONTAINER PRINCIPAL
         Digite o número com DDI:
     </label>
     <input type="text" id="whatsappUsuario" placeholder="Ex: 5511999998888" style="margin-bottom:10px; padding:5px;">
-    <a href="javascript:void(0)" onclick="enviarWhatsAppUsuario()" class="btn-whatsapp">
-        <img src="img/whatsapp-icon.png" style="height:20px; margin-right:5px;"> Enviar relatório - WhatsApp
-    </a>
-</div>
+        <button onclick="enviarWhatsAppUsuario()" class="btn-whatsapp">
+        <img src="img/whatsapp-icon.png" style="height:20px; margin-right:5px;">
+        Enviar relatório - WhatsApp
+        </button>
+    </div>
 
         <p style="font-size:13px; margin-top:10px; opacity:0.8;">
             Receba gratuitamente sua simulação detalhada por WhatsApp.
@@ -196,6 +197,13 @@ if ("serviceWorker" in navigator) {
             });
     });
 }
+</script>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        // Inicializações se necessário
+        console.log('Página carregada!');
+    });
 </script>
 
 </body>
