@@ -21,11 +21,27 @@ const CONFIG = {
 // ==========================
 // UTILITÁRIOS
 // ==========================
-function parseMoeda(valor) {
+/*function parseMoeda(valor) {
     if (!valor) return 0;
     return parseFloat(
         valor.replace(/\./g, '').replace(',', '.')
     ) || 0;
+}*/
+
+function parseMoeda(valor) {
+    if (!valor) return 0;
+
+    valor = valor.toString().trim();
+
+    // remove tudo que não for número ou vírgula/ponto
+    valor = valor.replace(/[^\d,.-]/g, "");
+
+    // se tiver vírgula, assume padrão BR
+    if (valor.includes(",")) {
+        valor = valor.replace(/\./g, "").replace(",", ".");
+    }
+
+    return parseFloat(valor) || 0;
 }
 
 function formatar(v) {
@@ -110,6 +126,14 @@ function calcular() {
         let dep = parseInt(document.getElementById("dependentes").value) || 0;
         let pensao = parseMoeda(document.getElementById("pensao").value);
         let prev = parseMoeda(document.getElementById("previdencia").value);
+
+        // =========================
+        // VALIDAÇÃO - SALÁRIO
+        //===========================
+        if (!salario || salario <= 0) {
+            alert("Informe um salário válido.");
+            return;
+        }
         
         salario = Math.max(0, salario);
         
