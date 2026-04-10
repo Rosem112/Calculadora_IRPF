@@ -21,13 +21,6 @@ const CONFIG = {
 // ==========================
 // UTILITÁRIOS
 // ==========================
-/*function parseMoeda(valor) {
-    if (!valor) return 0;
-    return parseFloat(
-        valor.replace(/\./g, '').replace(',', '.')
-    ) || 0;
-}*/
-
 function parseMoeda(valor) {
     if (!valor) return 0;
 
