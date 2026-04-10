@@ -2,9 +2,11 @@
   "name": "Simulador IRPF RCONT",
   "short_name": "IRPF RCONT",
   "start_url": "/Calculadora_IRPF/",
+  "scope": "/Calculadora_IRPF/",
   "display": "standalone",
   "background_color": "#0f172a",
   "theme_color": "#1e3a8a",
+  "lang": "pt-BR",
   "icons": [
     {
       "src": "/Calculadora_IRPF/icons/icon-192.png",
